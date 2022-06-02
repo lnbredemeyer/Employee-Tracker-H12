@@ -99,3 +99,37 @@ function viewrole() {
     ); 
 };
 
+var roleChoices = [];
+var empChoices = [];
+var deptChoices = [];
+
+// Function to lookup role
+function lookupRole(){  
+    connection.query("SELECT * FROM role", function (err, data) {
+        if (err) throw err;
+        for (i = 0; i < data.length; i++) {
+            roleChoices.push(data[i].id + "-" + data[i].title)
+        }
+     })
+}
+
+// Function to lookup Employee
+function lookupEmployee(){  
+    connection.query("SELECT * FROM employee", function (err, data) {
+        if (err) throw err;
+        for (i = 0; i < data.length; i++) {
+        empChoices.push(data[i].id + "-" + data[i].first_name+" "+ data[i].last_name)
+         }
+    }) 
+}
+  
+// Function to Lookup Departments
+function lookupDeptments(){
+  connection.query("SELECT * FROM department", function (err, data) {
+    if (err) throw err;
+    for (i = 0; i < data.length; i++) {
+        deptChoices.push(data[i].id + "-" + data[i].name)
+    }
+  })
+}
+
