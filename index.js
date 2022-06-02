@@ -135,10 +135,10 @@ function addEmployee() {
         const role = answer.roleName;
         connection.query('SELECT * FROM role', function(err, res) {
             if (err) throw (err);
-            let filteredRole = res.filter(function(res) {
+            var filteredRole = res.filter(function(res) {
                 return res.title == role;
             })
-        let roleId = filteredRole[0].id;
+        var roleId = filteredRole[0].id;
         connection.query("SELECT * FROM employee", function(err, res) {
                 inquirer
                 .prompt ([
@@ -160,13 +160,13 @@ function addEmployee() {
                     const manager = managerAnswer.manager;
                 connection.query('SELECT * FROM employee', function(err, res) {
                 if (err) throw (err);
-                let filteredManager = res.filter(function(res) {
+                var filteredManager = res.filter(function(res) {
                 return res.last_name == manager;
             })
-            let managerId = filteredManager[0].id;
+            var managerId = filteredManager[0].id;
                     console.log(managerAnswer);
-                    let query = "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)";
-                    let values = [answer.firstName, answer.lastName, roleId, managerId]
+                    var query = "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)";
+                    var values = [answer.firstName, answer.lastName, roleId, managerId]
                     console.log(values);
                      connection.query(query, values,
                          function(err, res, fields) {
@@ -216,13 +216,13 @@ function addRole() {
         connection.query('SELECT * FROM DEPARTMENT', function(err, res) {
         
             if (err) throw (err);
-         let filteredDept = res.filter(function(res) {
+         var filteredDept = res.filter(function(res) {
             return res.name == department;
         }
         )
-        let id = filteredDept[0].id;
-       let query = "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)";
-       let values = [answer.title, parseInt(answer.salary), id]
+        var id = filteredDept[0].id;
+       var query = "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)";
+       var values = [answer.title, parseInt(answer.salary), id]
        console.log(values);
         connection.query(query, values,
             function(err, res, fields) {
@@ -297,9 +297,9 @@ function updateRole() {
                     console.log(rolesAnswer.role);
                 connection.query('SELECT * FROM role WHERE title = ?', [role], function(err, res) {
                 if (err) throw (err);
-                    let roleId = res[0].id;
-                    let query = "UPDATE employee SET role_id ? WHERE last_name ?";
-                    let values = [roleId, name]
+                    var roleId = res[0].id;
+                    var query = "UPDATE employee SET role_id ? WHERE last_name ?";
+                    var values = [roleId, name]
                     console.log(values);
                      connection.query(query, values,
                          function(err, res, fields) {
