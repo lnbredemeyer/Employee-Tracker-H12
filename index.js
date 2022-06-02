@@ -39,7 +39,7 @@ function runQuestions() {
           console.log(answer);
         
         if (answer.selection === "View All Employees") {
-          viewAllEmp();
+          viewAllEmployees();
         }
         else if(answer.selection === "View Department") {
           viewDepts();
@@ -54,7 +54,7 @@ function runQuestions() {
     
         }
         else if(answer.selection === "Add Department") {
-          addDept();
+          addDepartment();
     
         }
         else if(answer.selection === "Add Role") {
@@ -71,7 +71,7 @@ function runQuestions() {
     }
 
 //View All Employees Function
-function viewAllEmp() {
+function viewAllEmployees() {
     connection.query("SELECT employee.id, employee.first_name, employee.last_name, employee.role_id, employee.manager_id, role.title, role.salary, role.id, department.id FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id", function(err, result, fields) {
         if (err) throw err;
         console.table(result);
@@ -99,6 +99,7 @@ function viewrole() {
     ); 
 };
 
+// Arrays
 var roleChoices = [];
 var empChoices = [];
 var deptChoices = [];
@@ -133,3 +134,112 @@ function lookupDeptments(){
   })
 }
 
+// Function Add Employee
+function addEmployee() {
+    
+    lookuprole()
+    lookupEmployee()
+
+    inquirer.prompt([
+    {
+        name: "firstname",
+        type: "input",
+        message: "What is the employee's first name?"
+    },
+
+    {
+        name: "lastname",
+        type: "input",
+        message: "What is the employee's last name?"
+    },
+
+    {
+        name: "role",
+        type: "list",
+        message: "What is the employee's role?",
+        choices: roleChoices 
+        },
+
+        {
+        name: "reportingTo",
+        type: "list",
+        message: "Who is the employee's manager?",
+        choices: empChoices
+        }
+
+        ]).then(function(answer) {
+        var getRoleId =answer.role.split("-")
+        var getReportingToId=answer.reportingTo.split("-")
+        var query = 
+        `INSERT INTO employee (first_name, last_name, role_id, manager_id)
+        VALUES ('${answer.firstname}','${answer.lastname}','${getRoleId[0]}','${getReportingToId[0]}')`;
+        connection.query(query, function(err, res) {
+        console.log(`new employee ${answer.firstname} ${answer.lastname} added!`)
+        });
+        runQuestions();
+    });
+};
+
+// Function Add Role
+function addRole() {
+    
+    lookuprole()
+    lookupEmployee()
+    lookupDepts()
+
+    inquirer.prompt([
+    {
+        name: "role",
+        type: "input",
+        message: "Enter the role you would like to add:"
+    },
+
+    {
+        name: "dept",
+        type: "list",
+        message: "In what department would you like to add this role?",
+        choices: deptChoices
+    },
+
+    {
+        name: "salary",
+        type: "number",
+        message: "Enter the role's salary:"
+    },
+
+        ]).then(function(answer) {
+        console.log(`${answer.role}`)
+        var getDeptId =answer.dept.split("-")
+        var query = 
+        `INSERT INTO role (title, salary, department_id)
+        VALUES ('${answer.role}','${answer.salary}','${getDeptId[0]}')`;
+        connection.query(query, function(err, res) {
+        console.log(`<br>--new role ${answer.role} added!--`)
+        });
+        runQuestions();
+    });
+};
+
+// Function Add Department
+function addDepartment() {
+    
+    lookuprole()
+    lookupEmployee()
+    lookupDepts()
+
+    inquirer.prompt([
+    {
+        name: "dept",
+        type: "input",
+        message: "Enter the department you would like to add:"
+    }
+    ]).then(function(answer) {
+        var query = 
+        `INSERT INTO department (name)
+        VALUES ('${answer.dept}')`;
+        connection.query(query, function(err, res) {
+        console.log(`--new department added: ${answer.dept}--`)
+        });
+        runQuestions();
+    });
+};
